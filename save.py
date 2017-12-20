@@ -4,8 +4,8 @@ import sys
 from deiis.rabbit import Message, MessageBus
 
 destination = '/tmp/submission.json'
-if sys.argv:
-    destination = sys.argv[0]
+if len(sys.argv) > 1:
+    destination = sys.argv[1]
 
 message = Message.Command('SAVE ' + destination, [])
 
