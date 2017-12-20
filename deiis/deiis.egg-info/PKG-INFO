@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: deiis
+Version: 0.0.6
+Summary: Python classes for CMU 11-791
+Home-page: https://github.com/CMU-11-791/python-deiis
+Author: Keith Suderman
+Author-email: suderman@cs.vassar.edu
+License: UNKNOWN
+Download-URL: https://github.com/CMU-11-791/python-deiis/archive/0.0.6.tar.gz
+Description-Content-Type: UNKNOWN
+Description: UNKNOWN
+Keywords: cmu,deiis,nlp,web services
+Platform: UNKNOWN

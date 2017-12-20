@@ -1,0 +1,31 @@
+INFO  - service:17    main:<module> - Staring service NoneExpander
+DEBUG - rabbit:346   NoneExpander:run - Starting the listener
+INFO  - service:17    main:<module> - Staring service SnomedctExpander
+DEBUG - rabbit:346   SnomedctExpander:run - Starting the listener
+INFO  - service:17    main:<module> - Staring service UMLSExpander
+DEBUG - rabbit:346   UMLSExpander:run - Starting the listener
+INFO  - service:21    main:<module> - Waiting for the tasks to end.
+DEBUG - Expander:72    NoneExpander:perform - Not expanding input!
+DEBUG - rabbit:372   NoneExpander:stop - Stopping the listener.
+DEBUG - rabbit:125   BusListener:stop - Sending basic_cancel
+DEBUG - Expander:33    SnomedctExpander:perform - Received command message
+DEBUG - Expander:33    UMLSExpander:perform - Received command message
+INFO  - Expander:35    SnomedctExpander:perform - Received the poison pill
+INFO  - Expander:35    UMLSExpander:perform - Received the poison pill
+DEBUG - rabbit:372   SnomedctExpander:stop - Stopping the listener.
+DEBUG - rabbit:372   UMLSExpander:stop - Stopping the listener.
+DEBUG - rabbit:125   BusListener:stop - Sending basic_cancel
+DEBUG - rabbit:125   BusListener:stop - Sending basic_cancel
+DEBUG - rabbit:127   BusListener:stop - basic_cancel sent
+DEBUG - rabbit:127   BusListener:stop - basic_cancel sent
+DEBUG - rabbit:374   SnomedctExpander:stop - Stopped listeners.
+DEBUG - rabbit:374   UMLSExpander:stop - Stopped listeners.
+DEBUG - rabbit:348   UMLSExpander:run - listener.start() has exited
+DEBUG - rabbit:348   SnomedctExpander:run - listener.start() has exited
+DEBUG - rabbit:127   BusListener:stop - basic_cancel sent
+DEBUG - rabbit:374   NoneExpander:stop - Stopped listeners.
+DEBUG - rabbit:348   NoneExpander:run - listener.start() has exited
+DEBUG - rabbit:379   NoneExpander:wait_for - Thread NoneExpander terminated.
+DEBUG - rabbit:379   SnomedctExpander:wait_for - Thread SnomedctExpander terminated.
+DEBUG - rabbit:379   UMLSExpander:wait_for - Thread UMLSExpander terminated.
+INFO  - service:25    main:<module> - Done.

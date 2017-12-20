@@ -1,0 +1,2 @@
+/Users/suderman/Workspaces/IntelliJ/DEIIS/BioasqArchitecture/.venv/lib/python2.7/site-packages/deiis-0.0.1-py2.7.egg
+/Users/suderman/Workspaces/IntelliJ/DEIIS/BioasqArchitecture/.venv/bin/chardetect
