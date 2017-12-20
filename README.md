@@ -30,6 +30,8 @@ Collates the results from the pipeline and writes to an output file.
 
 ## Prequisites and Installation
 
+The system configuration for this project is exactly the same as for the [BioasqArchitecture](https://github.com/CMU-11-791/BioasqArchitecture) project. If you have that project working this project will (should) work as well.
+
 1. Python 2.7+
 1. Java 1.8
 1. Docker (for the RabbitMQ server at least)
@@ -56,6 +58,8 @@ Install all of the following with `pip`
 1. werkzeug
 1. lxml
 1. diskcache
+1. pyquery
+1. pika
 
 Since the services are no longer web services the following packages are likely no longer required. Although installing them likely does not hurt.
 
