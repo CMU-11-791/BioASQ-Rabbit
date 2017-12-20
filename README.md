@@ -25,7 +25,7 @@ Collates the results from the pipeline and writes to an output file.
 
 1. [Installation](#installation)
 1. [Running](#running)
-1. [Design Notes](#design_notes)
+1. [Design Notes](#design-notes)
 1. [TODO](#todo)
 
 ## Prequisites and Installation
