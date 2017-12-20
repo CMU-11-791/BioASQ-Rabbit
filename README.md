@@ -81,7 +81,7 @@ docker run -d -p 5672:5672 -p 15672:15672 --hostname deiss --name rabbit rabbitm
 
 After the RabbitMQ server has started you can connect to the management console at [http://localhost:15672](http://localhost:15672) (username: *guest*, password: *guest*).
 
-## Staring The Services
+## Starting The Services
 
 Each module has a `service.py` script that is used to start all of the services in that modules. You can either run each module's `service.py` script in its own shell/terminal. Or you can use the `start.sh` script to start all of the services at once.
 
