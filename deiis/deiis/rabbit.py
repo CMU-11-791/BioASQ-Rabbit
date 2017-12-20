@@ -167,7 +167,7 @@ class BroadcastListener(object):
         """
         Register a handler for the exchange.
 
-        Note that we do know ack (acknowledge) broadcast messages so there is
+        Note that we do not ack (acknowledge) broadcast messages so there is
         no guarantee that the message will be delivered/received.
         """
         self.tag = self.channel.basic_consume(handler, queue=self.name, no_ack=True)
