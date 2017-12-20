@@ -232,12 +232,11 @@ bus.publish('splitter', message)
 1. Credentials used to access the UMLS server are hard coded!  These should be loaded from environment variables set on the server. They **should not** be loaded from an *.ini* file that will be checked into source control.
 1. Implement the `Splitter` services. Currently the `Ranker` module (in particular the code the calculates similarity scores) performs sentence splitting and tokenizing every time two sentences are compared.  This results in approximately *O(N<sup>2</sup>)* tokenizations being performed when *O(N)* will do.
 1. All of the services assume that the RabbitMQ server is available on *localhost*.  In practice this is likely not to be the case.  The address of the RabbitMQ server should be parameterized and obtained from an *.ini* file or loaded from an environmental variable. E.g:
-
-  ```python
+```python
   host = os.environ.get('RABBITMQ_HOST')
   bus = MessageBus(host=host)
-  ```
-1. Deploy all of the services in Docker containers to simplify scaling services on Kubernetes clusters.
+```
+4. Deploy all of the services in Docker containers to simplify scaling services on Kubernetes clusters.
 1. Better setup instructions/scripts for setting up all the dependencies.
 
 
