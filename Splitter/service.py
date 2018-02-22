@@ -1,6 +1,6 @@
-from deiis.rabbit import Task
-from deiis.model import Question, Sentence
-from deiis.json import Serializer, Message
+from deiis.rabbit import Task, Message
+from deiis.model import Serializer, Question, Sentence
+#from deiis.json import Serializer, Message
 
 from nltk import word_tokenize, sent_tokenize
 
