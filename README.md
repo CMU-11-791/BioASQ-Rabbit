@@ -30,19 +30,21 @@ Collates the results from the pipeline and writes to an output file.
 
 ## Prequisites and Installation
 
-The system configuration for this project is exactly the same as for the [BioasqArchitecture](https://github.com/CMU-11-791/BioasqArchitecture) project. If you have that project working this project will (should) work as well.
-
-1. Python 2.7+
+1. Python 2.7(Python 3.x is not supported)
 1. Java 1.8
-1. Docker (for the RabbitMQ server at least)
-1. Pylucene 6.5.0
-1. pymetamap (note public_mm must be install separately)
-1. SnomedCT data (download link/instructions needed)
-1. Other (??)
+1. [Docker](https://store.docker.com/search?type=edition&offering=community) (for the RabbitMQ server at least)
 
 ### Python Dependencies
 
-The `deiis` package must be installed by running the `setup.py` script.
+Most of the Python dependencies are listed in the requirements.txt file and can be installed with the `pip install -r` command.
+
+```
+pip install -r requirements.txt
+```
+
+### deiis
+
+The `deiis` package must be installed by running the `deiis/setup.py` script.
 
 ```bash
 cd deiis
@@ -50,24 +52,16 @@ python setup.py install
 cd -
 ```
 
-Install all of the following with `pip`
+### MetaMap
 
-1. pymedtermino
-1. nltk
-1. sklearn
-1. werkzeug
-1. lxml
-1. diskcache
-1. pyquery
-1. pika
+You can download the MetaMap files [here](http://downloads.lappsgrid.org/deiis/metamap.tgz) or use `wget`.
 
-Since the services are no longer web services the following packages are likely no longer required. Although installing them likely does not hurt.
+```
+wget http://downloads.lappsgrid.org/deiis/metamap.tgz
+```
 
-1. flask
-1. jinja2
-1. itsdangerous
-1. click
-1. cssselect
+The default project configuration expects the metamap files to be found in `/usr/local/share` (this location works for both Linux and MacOS).  If you want/need to install the files in a different location you will need to edit the
+### Pymetamap
 
 # Running
 
@@ -93,6 +87,8 @@ Use the `pipeline.py` script to load a BioASQ JSON and send each question in the
 python pipeline.py data/training.json
 ```
 
+**NOTE** Only the first ten questions in the file are processed.  To change the number of questions processed you will have to edit the `for` loop on line 23 of the `pipeline.py` script.
+
 ## Saving The Results
 
 The `ResultCollector` service will collect all of the candidate answers, however the service has no way of knowing when all of the questions have been collected.  Therefore the `ResultCollector` service listens for a special message to arrive on its message queue (SAVE) and saves the results when it receives that message.  Use the `save.py` script to send the `SAVE` message to the `ResultCollector` service.  If you do not pass a filename/path to the `save.py` script the results will be written to `/tmp/submission.json`.
@@ -112,7 +108,7 @@ python stop.py
 Individual services can be shut down by specifying a list of services. This is useful during development and testing to restart just the services in a particular module.
 
 ```bash
-python stop.py expand.none expand.snomed expand.umls
+python stop.py expand.none expand.umls
 ```
 
 **Note** All of the services in a module must be shutdown before that module will exit.  The services in each module are:
@@ -130,8 +126,7 @@ python stop.py expand.none expand.snomed expand.umls
 1. Results
     1. **results**
 
-**Note** the above names are really the names of the message queues that the service listens to and not the name of the service itself.
-
+**Note** the above names are really the names of the *routing key* used to direct messages to a particular service and not the name of the service itself.
 
 # Design Notes
 
@@ -155,7 +150,7 @@ Two types of messages are supported: `route` and `command`.  The `command` messa
 The body of the message; either the question to be processed (`route` message) or the command to perform (`command` messages).
 
 **route**<br/>
-A list of services (message queues) the message should be sent to.  After processing a message it is up to the service to send it to the next service in the list.  If the `route` list is empty the message is dropped (presumably processing the message had some side effects).
+A list of services (routing keys) the message should be sent to.
 
 Use the `deiis.rabbit.Message` class to create and send messages:
 
@@ -164,16 +159,16 @@ from deiis.rabbit import Message, MessageBus
 from deiis.model import Question
 
 question = Question(...)
-message = Message(body=question, route=['mmr.soft', 'tiler.concat', 'results'])
+message = Message(body=question, route=['expand.umls', 'mmr.soft', 'tiler.concat', 'results'])
 bus = MessageBus()
-bus.publish('expand.umls', message)
+bus.send(message)
 ```
 
 ## Tasks
 
 All of the services extend the `deiis.rabbit.Task` class which manages the RabbitMQ message queues and starts the message queue listener in its own thread.  The `Task` class will call the `perform` whenever a message arrives on its message queue. Subclasses can override this method to process messages (questions) when they arrive.
 
-The `Task` constructor takes the name of the message queue that that the service will monitor.
+The `Task` constructor takes the *routing key* used to send messages to the service.
 
 ```
 from deiis.rabbit import Task, Message, MessageBus
@@ -181,37 +176,35 @@ from deiis.model import Serializer
 from nltk import sent_tokenize, word_tokenize
 
 class Splitter(Task):
+    """The Splitter expects a string and returns an array of strings."""
     def __init__(self):
         super(Splitter, self).__init__('splitter')
 
-    def perform(self, input):
-        """The input is expected to be a JSON string that can be parsed into a Message object"""
-        message = Serializer.parse(input, Message)
-        message.body = sent_tokenize(message.body)
-        self.deliver(message)
+    def perform(self, text):
+        return sent_tokenize(text)
 
 
 class Tokenizer(Task):
+    """The tokenizer expects and array of string (the sentences) and tokenizes
+       each sentence."""
     def __init__(self):
         super(Tokenizer, self).__init__('tokenizer')
 
-    def perform(self, input):
-        message = Serializer.parse(input, Message)
+    def perform(self, sentences):
         tokenized_sentences = list()
-        for sentence in message.body:
+        for sentence in sentences:
             tokenized = word_tokenize(sentence)
             tokenized_sentences.append(tokenized)
-        message.body = tokenized_sentences
-        self.deliver(message)
+        return tokenized_sentences
 
 
 class Printer(Task):
+    """Prints each token."""
     def __init__(self):
         super(Printer, self).__init__('printer')
 
-    def perform(self, input):
-        message = Serializer.parse(input, Message)
-        for sentence in message.body:
+    def perform(self, sentences):
+        for sentence in sentences:
             for token in sentence:
                 print token
             print ''
@@ -223,9 +216,9 @@ To invoke the above services:
 ```python
 from deiis.rabbit import Message, MessageBus
 
-message = Message(body="Goodbye cruel world. I am leaving you today.", route=['tokenizer', 'printer'])
+message = Message(body="Goodbye cruel world. I am leaving you today.", route=['splitter', 'tokenizer', 'printer'])
 bus = MessageBus()
-bus.publish('splitter', message)
+bus.send(message)
 ```
 
 **Note** The code for the above example can be found in `examples/splitter.py`.

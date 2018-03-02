@@ -6,4 +6,6 @@
 *.zip
 *.log
 pylucene-6.5.0/
-pymetamap/
+pymetamap/build/
+pymetamap/dist/
+pymetamap/pymetamap.egg-info/

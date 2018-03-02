@@ -6,9 +6,10 @@ This is an Abstract Class to perform Concept Expansions. This class cannot be in
 implemented.
 The subclass that extends the abstract class is valid if and only if all the abstract methods are implemented.
 '''
+import abc
 
-from deiis.rabbit import Task, Message
-from deiis.model import Serializer, Question
+from deiis.rabbit import Task
+from deiis.model import Question
 
 from singletonConceptId import *
 
@@ -16,13 +17,11 @@ import logging
 from logging import config
 
 logging.config.fileConfig('logging.ini')
-# logger = logging.getLogger('bioAsqLogger')
 
 
 class Expander(Task):
-    # __metaclass__ = abc.ABCMeta
+    __metaclass__ = abc.ABCMeta
 
-    # @classmethod
     def __init__(self, route):  # constructor for the abstract class
         super(Expander, self).__init__(route)
         self.mm = SingletonMetaMap.Instance().mm
@@ -38,12 +37,11 @@ class Expander(Task):
 
 
     # This is the abstract method that is implemented by the subclasses.
-    # @abstractmethod
+    @abc.abstractmethod
     def getExpansions(self, sentence):
         pass
 
     # Given a sentence as input, this method gives a list of all the biomedical concepts identified by the metamap
-    # @classmethod
     def getMetaConcepts(self, sentence):
         self.logger.info('retrieving meta concepts from MetaMap')
         try:
@@ -66,17 +64,6 @@ class NoneExpander(Expander):
 
     def getExpansions(self, sentence):
         return sentence
-
-    # def perform(self, input):
-    #     self.logger.debug('Not expanding input!')
-    #     message = Serializer.parse(input, Message)
-    #     if message.type == 'command':
-    #         if message.body == 'DIE':
-    #             self.stop()
-    #         else:
-    #             self.logger.error("Unknown command message %s", message.body)
-    #
-    #     self.deliver(message)
 
 # If this part is uncommented in the code and run then it should throw an error because the abstract methods are not implemented.
 if __name__ == '__main__':
