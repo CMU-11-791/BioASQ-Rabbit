@@ -41,5 +41,5 @@ class Concatenation(Tiler):
 
 if __name__ == '__main__':
     instance = Concatenation()
-    print instance.tileSentences(["John"," has cancer"])
+    print(instance.tileSentences(["John"," has cancer"]))
 

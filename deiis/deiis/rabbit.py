@@ -10,6 +10,7 @@ pattern.
 The above classes also have listener classes that users can use to receive
 messages.
 """
+from abc import abstractmethod
 
 import pika
 import threading
@@ -40,6 +41,10 @@ class Message(JsonObject):
     to services, e.g. shutdown.
 
     """
+
+    COMMAND = 'command'
+    POISON = 'DIE'
+
     properties = {
         'type': (lambda: 'route'),
         'body': Type.text,
@@ -77,6 +82,10 @@ class MessageBus(object):
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange=exchange, exchange_type='direct')
         self.exchange = exchange
+
+    def send(self, message):
+        target = message.forward()
+        self.publish(target, message)
 
     def publish(self, route, message):
         if not isinstance(message, basestring):
@@ -354,12 +363,24 @@ class Task(object):
         t.start()
         self.thread = t
 
-    def _handler(self, channel, method, properties, message):
+    def _handler(self, channel, method, properties, json):
         """Default message handler that calls the user's `perform` method
            and then acknowledges the message.
         """
-        self.perform(message)
+        message = Serializer.parse(json, Message)
+        if message.type == Message.COMMAND:
+            self.logger.debug("Received a command message")
+            if message.body == Message.POISON:
+                self.logger.info("Recieved the poison pill.")
+                self.stop()
+            else:
+                self.command(message.body)
+        else:
+            message.body = self.perform(message.body)
+
         self.ack(method)
+        self.deliver(message)
+
 
     def ack(self, method):
         """Shorthand for what is otherwise a really lengthy method call."""
@@ -378,8 +399,13 @@ class Task(object):
         self.thread.join()
         self.logger.debug('Thread %s terminated.', self.__class__.__name__)
 
+    @abstractmethod
     def perform(self, input):
         """Services should override this method to handle incoming messages."""
+        pass
+
+    def command(selfs, input):
+        """Service can override the command method to handle custom command messages"""
         pass
 
     def deliver(self, message):

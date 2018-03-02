@@ -17,14 +17,14 @@ if __name__ == '__main__':
     fp.close()
 
     # The list of services to send the questions to.
-    pipeline = ['mmr.core', 'tiler.concat', 'results']
+    pipeline = ['expand.none', 'mmr.core', 'tiler.concat', 'results']
     count=0
     bus = MessageBus()
     for index in range(0,10):
         question = dataset.questions[index]
     # for question in dataset.questions:
         message = Message(body=question, route=pipeline)
-        bus.publish('expand.none', message)
+        bus.send(message)
         count = count + 1
 
     print 'Sent {} questions for ranking.'.format(count)

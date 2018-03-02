@@ -8,7 +8,7 @@ The subclass that extends the abstract class is valid if and only if all the abs
 '''
 
 from deiis.rabbit import Task, Message
-from deiis.model import Serializer
+from deiis.model import Serializer, Question
 
 from singletonConceptId import *
 
@@ -27,19 +27,14 @@ class Expander(Task):
         super(Expander, self).__init__(route)
         self.mm = SingletonMetaMap.Instance().mm
 
-    def perform(self, input):
-        message = Serializer.parse(input, Message)
-        if message.type == 'command':
-            self.logger.debug("Received command message")
-            if message.body == 'DIE':
-                self.logger.info('Received the poison pill')
-                self.stop()
-                return
-            else:
-                self.logger.warn("Unknown command message: %s", message.body)
-        message.body = self.getExpansions(message.body)
+    def perform(self, map):
+        # message = Serializer.parse(input, Message)
+        question = Question(map)
+        # TODO This only expands the question text.  The snippets should be expanded as well.
+        question.body = self.getExpansions(question.body)
         self.logger.debug('Delivering the message to next target')
-        self.deliver(message)
+        return question
+        # self.deliver(message)
 
 
     # This is the abstract method that is implemented by the subclasses.

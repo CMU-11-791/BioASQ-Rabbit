@@ -5,7 +5,7 @@ from deiis.rabbit import MessageBus, Message
 
 # All the services that may be running.
 all = [ 'mmr.hard', 'mmr.soft', 'mmr.core',
-        'expand.none', 'expand.snomed', 'expand.umls',
+        'expand.none', 'expand.umls', #'expand.snomed',
         'tiler.concat',
         'results'
         ]

@@ -1,4 +1,4 @@
-FROM deiis/base-image
+FROM deiis/base
 
 COPY *.py /root/
 WORKDIR /root

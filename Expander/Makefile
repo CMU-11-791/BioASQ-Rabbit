@@ -1,15 +1,18 @@
-IMAGE=deiis/expander
 NAME=expander
-PORT=8083
+IMAGE=deiis/$(NAME)
+
+META=http://downloads.lappsgrid.org/deiis/metamap.tgz
+PY=http://downloads.lappsgrid.org/deiis/pymetamap.tgz
 
 docker:
 	docker build -t $(IMAGE) .
 	
+download:
+	if [ ! -x $(META) ] ; then wget $(META) ; fi
+	if [ ! -x $(PY) ] ; then wget $(PY) ; fi
+
 start:
 	docker run -d -p $(PORT):8080 --name $(NAME) $(IMAGE)
-
-test:
-	curl -i -H 'Content-type:text/plain' -d "Fried green tomatoes." http://localhost:$(PORT)/similarity/jaccard
 
 stop:
 	docker rm -f $(NAME)

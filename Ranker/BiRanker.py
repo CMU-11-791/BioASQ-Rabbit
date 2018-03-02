@@ -30,25 +30,18 @@ class BiRanker(Task):
         self.numSelectedSentences = selected
         self.logger.info('Created Task for %s', self.__class__.__name__)
 
-    def perform(self, input):
+    def perform(self, map):
+        question = Question(map)
         self.logger.info("Input received from route %s", self.route)
-        message = Serializer.parse(input, Message)
-        if message.type == 'command':
-            self.logger.debug("Received command message")
-            if message.body == 'DIE':
-                self.logger.info("Received the poison pill.")
-                self.stop()
-            else:
-                self.logger.warn("Unknown command message: %s", message.body)
-        else:
-            self.logger.info('Ranking sentences.')
-            self.logger.debug("Message body is a %s", str(type(message.body)))
-            question = Question(message.body)
-            question.ranked = self.getRankedList(question)
-            message.body = question
-
-        self.logger.debug('Delivering the message to next target')
-        self.deliver(message)
+        # message = Serializer.parse(input, Message)
+        self.logger.info('Ranking sentences.')
+        # self.logger.debug("Message body is a %s", str(type(message.body)))
+        # question = Question(message.body)
+        question.ranked = self.getRankedList(question)
+        # message.body = question
+        # self.logger.debug('Delivering the message to next target')
+        # self.deliver(message)
+        return question
 
     @abstractmethod
     def getRankedList(self, question):

@@ -25,45 +25,30 @@ class ResultsCollector(Task):
         self.questions = list()
 
     def perform(self, input):
-        self.logger.info('Received results')
-        message = Serializer.parse(input, Message)
-        if message.type == 'command':
-            self.logger.debug("Received command message")
-            if message.body == 'DIE':
-                self.logger.info('Received the poison pill')
-                self.stop()
-            elif message.body.startswith('SAVE'):
-                self.logger.debug("Received the SAVE command.")
-                parts = message.body.split(' ')
-                if len(parts) > 1:
-                    self.save(parts[1])
-                else:
-                    self.save()
-            elif message.body == 'RESET':
-                self.logger.info("Clearing the question list.")
-                self.questions = list()
-            else:
-                self.logger.warn("Unknown command message: %s", message.body)
-            return
-
-        question = Question(message.body)
+        question = Question(input)
         self.logger.debug("Received results for question %s", question.id)
-        self.questions.append(Question(message.body))
+        self.questions.append(question)
 
-        # if isinstance(message.body, basestring):
-        #     print message.body
-        # elif isinstance(message.body, list):
-        #     for i, question in enumerate(message.body):
-        #         print '{}. {}'.format(i, question)
-        # else:
-        #     self.logger.error("Unhandled message body type: " + str(type(message.body)))
-        #     print str(message.body)
+    def command(self, input):
+        if unicode.startswith(input, 'SAVE'):
+            self.logger.debug("Received the SAVE command.")
+            parts = input.split(' ')
+            if len(parts) > 1:
+                self.save(parts[1])
+            else:
+                self.save()
+        elif input == 'RESET':
+            self.logger.info("Clearing the question list.")
+            self.questions = list()
+        else:
+            self.logger.warn("Unknown command message: %s", input)
 
     def save(self, path=None):
         if path is None:
             path = '/tmp/submission.json'
 
         self.logger.debug("Saving dataset to %s", path)
+        self.logger.debug("Dataset contains %d questions.", len(self.questions))
         dataset = DataSet()
         dataset.questions = self.questions
         json = Serializer.to_pretty_json(dataset)

@@ -5,7 +5,7 @@ from Concatenation import Concatenation
 
 
 if __name__ == "__main__":
-    print 'Starting Tiler services.'
+    print('Starting Tiler services.')
     task = Concatenation()
     task.start()
     task.wait_for()

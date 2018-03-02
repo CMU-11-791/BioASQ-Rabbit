@@ -28,23 +28,16 @@ class Tiler(Task):
     def tileSentences(self, sentences):
         pass
 
-    def perform(self, input):
-        message = Serializer.parse(input, Message)
-        if message.type == 'command':
-            self.logger.debug("Received command message")
-            if message.body == 'DIE':
-                self.logger.info('Received the poison pill')
-                self.stop()
-                return
-            else:
-                self.logger.warn("Unknown command message: %s", message.body)
-
-        question = Question(message.body)
+    def perform(self, map):
+        # message = Serializer.parse(input, Message)
+        question = Question(map)
+        # TODO What about the ideal answer task?
         question.exact_answer = self.tileSentences(question.ranked)
-        message.body = question
-        self.logger.debug('Delivering the message to next target')
-        self.deliver(message)
+        # question.body = question
 
+        # self.logger.debug('Delivering the message to next target')
+        # self.deliver(message)
+        return question
 
 
 '''
