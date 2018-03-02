@@ -10,7 +10,7 @@ Utility classes for reading/writing the BioASQ JSON format and working with Rabb
 Not currently used.  A future version of this project will perform sentence splitting and tokenization as a distinct step in the pipeline to eliminate the redundant processing.
 
 **Expander**<br/>
-Expands medical terms and codes using either [Snomed](https://www.snomed.org) or [UMLS](https://semanticnetwork.nlm.nih.gov).
+Expands medical terms and codes.
 
 **Ranker**<br/>
 Ranks candidate answers.
@@ -38,7 +38,7 @@ Collates the results from the pipeline and writes to an output file.
 
 Most of the Python dependencies are listed in the requirements.txt file and can be installed with the `pip install -r` command.
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -56,12 +56,32 @@ cd -
 
 You can download the MetaMap files [here](http://downloads.lappsgrid.org/deiis/metamap.tgz) or use `wget`.
 
-```
+```bash
 wget http://downloads.lappsgrid.org/deiis/metamap.tgz
 ```
 
-The default project configuration expects the metamap files to be found in `/usr/local/share` (this location works for both Linux and MacOS).  If you want/need to install the files in a different location you will need to edit the
+The default project configuration expects the metamap files to be found in `/usr/local/share` (this location works for both Linux and MacOS).  If you want/need to install the files in a different location you will need to edit the `Expander/metamap.ini` file and edit the paths accordingly.
+
+Once the metamap.tgz file has been extracted you must run the `bin/install.sh` script and give it the name of the installation directory.
+
+```bash
+wget http://downloads.lappsgrid.org/deiis/metamap.tgz
+cp metamap.tgz /usr/local/share
+cd /usr/local/share
+tar xzf metamap.tgz
+rm metamap.tgz
+cd public_mm/bin
+./install.sh /usr/local/share/public_mm
+```
+
 ### Pymetamap
+
+Install the `pymetamap` project by running the `pymetamap/setup.py` script.
+
+```bash
+cd pymetamap
+python setup.py install
+```
 
 # Running
 
