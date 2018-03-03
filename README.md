@@ -30,11 +30,18 @@ Collates the results from the pipeline and writes to an output file.
 
 ## Prequisites and Installation
 
-1. Python 2.7(Python 3.x is not supported)
+1. Python 2.7 (Python 3.x is not supported)
 1. Java 1.8
 1. [Docker](https://store.docker.com/search?type=edition&offering=community) (for the RabbitMQ server at least)
 
 ### Python Dependencies
+
+You should create a virtual environment for the project.
+
+```bash
+virtualenv -p python2.7 .venv
+source .venv/bin/activate
+```
 
 Most of the Python dependencies are listed in the requirements.txt file and can be installed with the `pip install -r` command.
 
@@ -62,14 +69,13 @@ wget http://downloads.lappsgrid.org/deiis/metamap.tgz
 
 The default project configuration expects the metamap files to be found in `/usr/local/share` (this location works for both Linux and MacOS).  If you want/need to install the files in a different location you will need to edit the `Expander/metamap.ini` file and edit the paths accordingly.
 
-Once the metamap.tgz file has been extracted you must run the `bin/install.sh` script and give it the name of the installation directory.
+Once the metamap.tgz file has been extracted you must run the `public_mm/bin/install.sh` script and give it the name of the installation directory.
 
 ```bash
 wget http://downloads.lappsgrid.org/deiis/metamap.tgz
-cp metamap.tgz /usr/local/share
+mv metamap.tgz /usr/local/share
 cd /usr/local/share
 tar xzf metamap.tgz
-rm metamap.tgz
 cd public_mm/bin
 ./install.sh /usr/local/share/public_mm
 ```
@@ -97,7 +103,7 @@ After the RabbitMQ server has started you can connect to the management console 
 
 ## Starting The Services
 
-Each module has a `service.py` script that is used to start all of the services in that modules. You can either run each module's `service.py` script in its own shell/terminal. Or you can use the `start.sh` script to start all of the services at once.
+Each module has a `service.py` script that is used to start all of the services in that module. You can either run each module's `service.py` script in its own shell/terminal. Or you can use the `start.sh` script to start all of the services at once.
 
 ## Running The Pipeline
 
