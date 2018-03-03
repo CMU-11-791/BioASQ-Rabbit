@@ -24,8 +24,8 @@ class BiRanker(Task):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, route=[], alpha=0.5, selected=10):
-        super(BiRanker, self).__init__(route)
+    def __init__(self, route, host, alpha=0.5, selected=10):
+        super(BiRanker, self).__init__(route, host)
         self.alpha = alpha
         self.numSelectedSentences = selected
         self.logger.info('Created Task for %s', self.__class__.__name__)

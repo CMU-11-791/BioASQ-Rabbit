@@ -1,4 +1,4 @@
-FROM deiis/base-image
+FROM docker.lappsgrid.org/bioasq-rabbit/base
 
 COPY *.py /root/
 COPY logging.ini /root

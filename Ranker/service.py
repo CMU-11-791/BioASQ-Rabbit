@@ -2,16 +2,22 @@
 # from logging.config import fileConfig
 # logging.config.fileConfig('logging.ini')
 
+import os, sys
+
 from CoreMMR import CoreMMR
 from SoftMMR import SoftMMR
 from HardMMR import HardMMR
 
 if __name__ == '__main__':
+    host = os.environ.get('RABBIT_HOST', 'localhost')
+    if len(sys.argv) > 1 and sys.argv[1] != '/bin/bash':
+        host = sys.argv[1]
+
     print 'Declaring the services'
     services = list()
-    services.append(CoreMMR())
-    services.append(SoftMMR())
-    services.append(HardMMR())
+    services.append(CoreMMR(host))
+    services.append(SoftMMR(host))
+    services.append(HardMMR(host))
 
     print 'Staring the services'
     for service in services:

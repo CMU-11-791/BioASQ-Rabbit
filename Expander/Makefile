@@ -1,5 +1,7 @@
+REPO=docker.lappsgrid.org
 NAME=expander
-IMAGE=deiis/$(NAME)
+IMAGE=bioasq-rabbit/$(NAME)
+TAG=$(REPO)/$(IMAGE)
 
 META=http://downloads.lappsgrid.org/deiis/metamap.tgz
 PY=http://downloads.lappsgrid.org/deiis/pymetamap.tgz
@@ -12,7 +14,17 @@ download:
 	if [ ! -x $(PY) ] ; then wget $(PY) ; fi
 
 start:
-	docker run -d -p $(PORT):8080 --name $(NAME) $(IMAGE)
+ifndef RABBIT_HOST
+	@echo "Using localhost as RABBIT_HOST"
+	@echo "Please export RABBIT_HOST to use a different server."
+	RABBIT_HOST=localhost
+endif
+	docker run -d -p $(PORT):8080 -e RABBIT_PORT=$(RABBIT_PORT) --name $(NAME) $(IMAGE)
 
 stop:
 	docker rm -f $(NAME)
+
+push:
+	docker tag $(IMAGE) $(TAG)
+	docker push $(TAG)
+	

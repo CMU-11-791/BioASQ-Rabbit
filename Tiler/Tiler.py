@@ -20,8 +20,8 @@ Currently there is only one technique implemented which is simple concatenation.
 class Tiler(Task):
     # __metaclass__ = abc.ABCMeta
     # @classmethod
-    def __init__(self, route):
-        super(Tiler, self).__init__(route)
+    def __init__(self, route, host):
+        super(Tiler, self).__init__(route, host)
 
     # abstract method that should be implemented by the subclass that extends this abstract class
     # @abstractmethod

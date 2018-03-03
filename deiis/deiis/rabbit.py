@@ -67,6 +67,10 @@ class Message(JsonObject):
     def Command(body, route=[]):
         return Message(type='command', body=body, route=route)
 
+    @staticmethod
+    def Poison(route=[]):
+        return Message(type='command', body=Message.POISON, route=route)
+
 
 class MessageBus(object):
     """
@@ -334,10 +338,10 @@ class Task(object):
     The Task class does all the administrative busy-work needed to manage the
     RabbitMQ queues so services only need to implement the `perform` method.
     """
-    def __init__(self, route):
+    def __init__(self, route, host):
         """Route is a String containing the unique address for the service."""
-        self.bus = MessageBus()
-        self.listener = BusListener(route)
+        self.bus = MessageBus(host=host)
+        self.listener = BusListener(route, host=host)
         self.listener.register(self._handler)
         self.thread = False
         self.route = route

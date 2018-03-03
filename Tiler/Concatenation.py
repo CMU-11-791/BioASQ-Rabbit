@@ -22,8 +22,8 @@ This is a subclass that extends the abstract class Tiler.
 
 
 class Concatenation(Tiler):
-    def __init__(self):
-        super(Concatenation, self).__init__('tiler.concat')
+    def __init__(self, host):
+        super(Concatenation, self).__init__('tiler.concat', host)
 
     # Abstract method from Tiler class that takes a list of sentences as arguments and returns the final summary in a single string.
     def tileSentences(self, sentences):

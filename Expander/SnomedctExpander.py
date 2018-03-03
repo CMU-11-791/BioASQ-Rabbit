@@ -17,8 +17,8 @@ logging.config.fileConfig('logging.ini')
 
 
 class SnomedctExpander(Expander):
-    def __init__(self):
-        super(SnomedctExpander, self).__init__('expand.snomed')
+    def __init__(self, host='localhost'):
+        super(SnomedctExpander, self).__init__('expand.snomed', host)
 
     '''
     The abstract method from the base class is implemeted here to return a string of the original sentence with

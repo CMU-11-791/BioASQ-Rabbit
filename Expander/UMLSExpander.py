@@ -27,8 +27,8 @@ logging.config.fileConfig('logging.ini')
 
 # This is a subclass that extends the abstract class Expander.
 class UMLSExpander(Expander):
-    def __init__(self):
-        super(UMLSExpander, self).__init__('expand.umls')
+    def __init__(self, host='localhost'):
+        super(UMLSExpander, self).__init__('expand.umls', host)
 
     # Credentails to access the REST API of UMLS
     # TODO This information SHOULD not be hardcoded and checked into source control!

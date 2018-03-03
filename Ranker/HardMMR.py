@@ -16,8 +16,8 @@ This code contains the implementation of Abstract method for BiRanker.
 # Class that inherits the class CoreMMR which extends the abstract class BiRanker
 class HardMMR(CoreMMR):
     # constructor to instantiate CoreMMR since we want to change certain class variables, which are shown as follows
-    def __init__(self):
-        super(HardMMR, self).__init__(route='mmr.hard', selected=1, alpha=0.5)
+    def __init__(self, host):
+        super(HardMMR, self).__init__('mmr.hard', host, selected=1, alpha=0.5)
         self.mmrInstance = CoreMMR()
         self.mmrInstance.numSelectedSentences = 1
         self.mmrInstance.pos_dict = {}
