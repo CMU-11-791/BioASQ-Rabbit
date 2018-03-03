@@ -6,7 +6,7 @@ import os, sys
 
 from CoreMMR import CoreMMR
 from SoftMMR import SoftMMR
-from HardMMR import HardMMR
+from HarderMMR import HarderMMR
 
 if __name__ == '__main__':
     host = os.environ.get('RABBIT_HOST', 'localhost')
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     services = list()
     services.append(CoreMMR(host))
     services.append(SoftMMR(host))
-    services.append(HardMMR(host))
+    services.append(HarderMMR(host))
 
     print 'Staring the services'
     for service in services:

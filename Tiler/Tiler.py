@@ -1,5 +1,7 @@
 # import abc
 # from abc import abstractmethod
+import abc
+from abc import abstractmethod
 
 from deiis.rabbit import Task, Message
 from deiis.model import Serializer, Question
@@ -18,13 +20,12 @@ Currently there is only one technique implemented which is simple concatenation.
 
 
 class Tiler(Task):
-    # __metaclass__ = abc.ABCMeta
-    # @classmethod
+    __metaclass__ = abc.ABCMeta
     def __init__(self, route, host):
         super(Tiler, self).__init__(route, host)
 
     # abstract method that should be implemented by the subclass that extends this abstract class
-    # @abstractmethod
+    @abstractmethod
     def tileSentences(self, sentences):
         pass
 
