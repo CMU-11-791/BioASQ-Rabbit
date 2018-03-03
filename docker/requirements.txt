@@ -1,0 +1,7 @@
+nltk
+sklearn
+werkzeug
+lxml
+diskcache
+pyquery
+pika

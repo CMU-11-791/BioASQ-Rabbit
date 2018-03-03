@@ -1,0 +1,32 @@
+REPO=docker.lappsgrid.org
+IMAGE=bioasq-rabbit/$(NAME)
+TAG=$(REPO)/$(IMAGE)
+
+docker:
+	docker build -t $(IMAGE) .
+
+push:
+	docker tag $(IMAGE) $(TAG)
+	docker push $(TAG)
+
+start:
+	docker run -it -e RABBIT_HOST=$(RABBIT_HOST) --name $(NAME) $(IMAGE) /bin/bash
+
+stop:
+	docker rm -f $(NAME)
+
+service:
+	python service.py localhost
+
+help:
+	@echo
+	@echo "GOALS"
+	@echo
+	@echo "docker  - builds the image [default]"
+	@echo "push    - pushes the image to $REPO"
+	@echo "run     - runs the Docker container"
+	@echo "stop    - stops a running Docker container"	
+	@echo "service - runs the service.py script"		
+	@echo "help    - prints this help message"
+	@echo
+		
