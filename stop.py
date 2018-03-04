@@ -11,9 +11,8 @@ all = [ 'mmr.harder', 'mmr.soft', 'mmr.core',
         ]
 
 # The shutdown message for the services.
-die = Message.Command('DIE', [])
+die = Message.Poison()
 bus = MessageBus()
-
 
 if len(sys.argv) > 1:
     if sys.argv[1]  == 'all':

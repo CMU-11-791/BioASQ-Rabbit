@@ -15,7 +15,7 @@ deiis:
 	make -C deiis	
 
 docker:
-	make -C docker
+	make -C docker docker push
 
 expander:
 	make -C Expander

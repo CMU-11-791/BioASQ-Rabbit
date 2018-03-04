@@ -14,7 +14,7 @@ start:
 	@echo "Please export RABBIT_HOST before staring the Docker container."
 else
 start:
-	docker run -it -e RABBIT_HOST=$(RABBIT_HOST) --name $(NAME) $(IMAGE) /bin/bash
+	docker run -it --rm -e RABBIT_HOST=$(RABBIT_HOST) --name $(NAME) $(IMAGE) /bin/bash
 endif
 
 stop:

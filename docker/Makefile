@@ -8,11 +8,13 @@ docker:
 	#if [ ! -e $(TGZ) ] ; then cp ../deiis/$(TGZ) . ; fi
 	docker build -t $(IMAGE) .
 
-push:
+tag:
 	docker tag $(IMAGE) $(TAG)
+
+push:
 	docker push $(TAG)
 
-run:
+start:
 	docker run -it --name $(NAME) $(IMAGE) /bin/bash
 
 stop:
