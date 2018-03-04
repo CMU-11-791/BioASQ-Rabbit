@@ -18,7 +18,7 @@ docker:
 	make -C docker docker push
 
 expander:
-	make -C Expander
+	make -C Expander download docker
 	
 ranker:
 	make -C Ranker
