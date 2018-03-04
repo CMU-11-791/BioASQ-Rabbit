@@ -20,7 +20,7 @@ if __name__ == '__main__':
     pipeline = ['expand.none', 'mmr.core', 'tiler.concat', 'results']
     count=0
     bus = MessageBus()
-    for index in range(0,10):
+    for index in range(0,50):
         question = dataset.questions[index]
     # for question in dataset.questions:
         message = Message(body=question, route=pipeline)

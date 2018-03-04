@@ -11,5 +11,6 @@ RUN python setup.py install
 
 WORKDIR /root
 COPY *.py /root/
+COPY *.ini /root/
 
 ENTRYPOINT ["python", "service.py"]

@@ -1,14 +1,10 @@
 from Expander import Expander
-from pymedtermino import *
-from pymedtermino.umls import *
-from pymetamap import MetaMap
 from Authentication import *
 
 from singletonConceptId import *
 
 import requests
 import json
-import diskcache as dc
 
 import logging
 from logging import config

@@ -9,8 +9,13 @@ push:
 	docker tag $(IMAGE) $(TAG)
 	docker push $(TAG)
 
+ifndef RABBIT_HOST
+start:
+	@echo "Please export RABBIT_HOST before staring the Docker container."
+else
 start:
 	docker run -it -e RABBIT_HOST=$(RABBIT_HOST) --name $(NAME) $(IMAGE) /bin/bash
+endif
 
 stop:
 	docker rm -f $(NAME)

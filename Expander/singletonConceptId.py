@@ -14,7 +14,7 @@ class Singleton:
 			return self._instance
 
 config = ConfigParser.ConfigParser()
-config.read('application.ini')
+config.read('metamap.ini')
 
 @Singleton
 class SingletonMetaMap:
