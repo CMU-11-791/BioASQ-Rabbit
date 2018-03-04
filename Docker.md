@@ -110,7 +110,6 @@ Here we can see that Docker has assigned the IP address 172.17.0.2 to my RabbitM
 export RABBIT_HOST=172.17.0.2
 ```
 
-
 ## Project Layout
 
 Each service lives in its own directory and all services contain the following files:
@@ -166,47 +165,84 @@ make
 make expander
 ```
 
+**NOTE** The `bioasq-rabbit/base` image *must* be built before any of the other images since all other images extend the base image.  The base image in turn depends on the deiis module.
+
+```
+make deiis
+make docker
+```
+
 ## Running The Services
 
-```
-$> docker run -d -e HOST=$RABBIT_HOST --name one tutorial/one
-$> docker run -d -e HOST=$RABBIT_HOST --name two tutorial/two
-$> docker run -d -e HOST=$RABBIT_HOST --name three tutorial/three
-$> docker run -d -e HOST=$RABBIT_HOST --name printer -v /tmp:/var/log tutorial/printer
-```
-
-The `-v /tmp:/var/log` parameter used when starting the tutorial/printer container mounts the `/tmp` directory on the machine running Docker as `/var/log` in the Docker container.  Since the `printer` service writes its output to the /var/log directory this will cause the output to appear in the /tmp directory on the host machine.
-
-A Bash script is also provided that starts all of the containers.
+The easiest way to start all of the services is to use the `./start.sh` script
 
 ```
-$> ./start.sh
+$> ./start.sh docker
 ```
+
+The Makefile for each project also defines a `start` goal that can be used to start a container in *interactive mode*, that is, the container's log output will be displayed in the terminal window and the terminal will *block* until the container exits.
+
+```
+cd Expander
+make start
+```
+
+Finally, the containers can always be started manually with the `docker run` command.
+
+```
+docker run -d -e RABBIT_HOST=$RABBIT_HOST --name expander bioasq-rabbit/expander
+docker run -d -e RABBIT_HOST=$RABBIT_HOST --name ranker bioasq-rabbit/ranker
+docker run -d -e RABBIT_HOST=$RABBIT_HOST --name tiler bioasq-rabbit/tiler
+docker run -d -e RABBIT_HOST=$RABBIT_HOST --name results -v /tmp:/tmp bioasq-rabbit/results
+```
+
+The `-v /tmp:/tmp` parameter used when starting the `results` container mounts the `/tmp` directory on the machine running Docker as `/tmp` in the Docker container. We mount the /tmp directory so the `results` service can persist data outside of its containre.
+
 
 ### Running A Pipeline
 
-The `pipeline.py` script creates a [Message](https://github.com/CMU-11-791/Docker-Tutorial/blob/master/deiis/deiis/rabbit.py#L33) object with the list of parameters as the *route* (list of services) the message will be sent to.
+Use the `pipeline.py` script to load a JSON file with BioASQ data and send to the pipeline:
 
 ```
-python pipeline.py one two three two one one three print
+python pipeline.py data/training.json
 ```
+
+Currently the `pipeline.py` script only sends the first 50 questions through the pipeline.  This can be changed on line 23 of the script.
+
+### Viewing The Results
+
+The `results` service support several *command* messages in addition to listening for the *poison pill*. In particular the `results` service listens for a *SAVE* message that tells the service it should save the results it has collected to disk.  By default the results file will be written to `/tmp/submission.json` but this can be changed by including the path along with the *SAVE* command message.
+
+Use the `save.py` script to send the *SAVE* message to the `results` service:
+
+```
+./save.py /tmp/example.json
+```
+
+**NOTE** In the current configuration the only directory outside the container the `results` service can write to is the /tmp directory.  To write to other locations the `-v` option must be used to mount additional directories for the container.
+
+One challenge is knowing when the `results` service should write its output to disk.  The approach used now is to simply wait *a period of time* before sending the *SAVE* command.  A better approach is to `attach` a console to the results container so we can view its log output.
+
+```
+docker attach results
+```
+
+**NOTE** The above command may appear that it did not work, or that it does nothing. That is simply because the `results` service is not generating any logging output.  If you re-run the `pipeline.py` script you should see logging output appear in the window.
+
 
 ### Stopping The Services
-
 
 The easiest way to stop all the services is to simply kill the Docker containers.  However, the problem with this is that the containers/services are not shutdown cleanly and a service may be terminated before it has finished processing all of its messages.
 
 The correct way to terminate a service is to send it a *poison pill*, which is just a known message that services listen for to indicate they are to stop processing messages and terminate.  Use the `stop.sh` script to send the poison pill to all services:
 
 ```
-$> ./stop.sh
+$> ./stop.py
 ```
 
 To stop individual services use the *stop.py* script and specify just the message queues that the poison pill should be sent to:
 
 ```
-$> ./stop.py one printer
+$> ./stop.py mmr.core mmr.soft mmr.hard
 ```
-
-**Note:** The `stop.sh` script simply calls `stop.py` and then removes the Docker containers.  You can also use the `cleanup.sh` script to remove all stopped containers.
 
